@@ -1,0 +1,124 @@
+<!-- Include in the theme.liquid file for general site covering 
+inspired by https://github.com/patrickbolle/shopify-snippets/blob/master/ip-redirection.liquid
+-->
+{% comment %}
+  The below check was taken from some Liquid script I found somewhere on the internet. It checks if the theme customizer is open or the store owner is looking at the site, and disables the redirection if so. Helps for testing / annoyance.
+{% endcomment %}
+{% if content_for_header contains 'adminBarInjector' or content_for_header contains 'previewBarInjector' or content_for_header contains 'designMode' %}
+  {% assign dontShow = true %}
+{% endif %}
+
+{% unless dontShow %}
+<script>
+function showModal(detectedCountry) {
+    let redirectTimeout = 5000;
+    let modal = createModal();
+  
+    function createModal() {
+      let modal = document.createElement('div');
+      modal.style.position = 'absolute';
+      modal.style.top = '0';
+      modal.style.left = '0';
+      modal.style.width = '100%';
+      modal.style.height = '100%';
+      modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      modal.style.display = 'flex';
+      modal.style.justifyContent = 'center';
+      modal.style.alignItems = 'center';
+      modal.style.zIndex = '9999999';
+     let logott = document.createElement('img')
+        logott.style.width = '100px';
+        logott.style.height = '100px';
+     logott.src = '//best-dressed-bears.myshopify.com/cdn/shop/files/Final_BDB_logo_small_dbed8cc3-1af5-4035-bf2c-d8893db5b0dc_35x.svg?v=1686135454';
+ 
+      let modalContent = document.createElement('div');
+      modalContent.style.backgroundColor = '#fff';
+      modalContent.style.padding = '20px';
+      modalContent.style.borderRadius = '5px';
+         modalContent.appendChild(logott);
+              modalContent.style.display = 'flex';
+      modalContent.style.justifyContent = 'center';
+         modalContent.style.flexDirection = 'column';
+      modalContent.style.alignItems = 'center';
+      modalContent.style.zIndex = '9999999';
+      let secondsText = document.createElement('p');
+      secondsText.style.fontSize = '24px';
+      secondsText.style.fontWeight = 'bold';
+      modalContent.appendChild(secondsText);
+  
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
+  
+      return { modal, secondsText };
+    }
+  
+    function updateModal(startTime) {
+      let currentTime = Date.now();
+      let secondsElapsed = Math.floor((currentTime - startTime) / 1000);
+      let secondsRemaining = Math.ceil((redirectTimeout - (currentTime - startTime)) / 1000);
+  
+      modal.secondsText.textContent = `Redirecting in ${secondsRemaining} seconds`;
+  
+      if (secondsElapsed >= redirectTimeout / 1000) {
+        modal.secondsText.textContent = 'Redirecting...';
+        setTimeout(() => {
+          window.location.href = 'https://www.etsy.com/uk/shop/BestDressedBears';
+        }, 1000);
+      } else {
+        requestAnimationFrame(() => updateModal(startTime));
+      }
+    }
+  
+    updateModal(Date.now());
+  }
+  
+async function shopifyRedirect() {
+    const whitelistofcountries =  
+[    
+    "Albania",    "Andorra",    "Austria",    "Belarus",    "Belgium",    "Bosnia and Herzegovina",    "Bulgaria",    "Croatia",    "Cyprus",    "Czech Republic",    "Denmark",    "Estonia",
+    "Finland",    "France",    "Germany",    "Greece",    "Hungary",    "Iceland",    "Ireland",    "Italy",    "Kosovo",    "Latvia",    "Liechtenstein",    "Lithuania",    "Luxembourg",
+    "Malta",    "Moldova",    "Monaco",    "Montenegro",    "Netherlands",    "North Macedonia",    "Norway",    "Poland",    "Portugal",    "Romania",    "San Marino",    "Serbia",
+    "Slovakia",    "Slovenia",    "Spain",    "Sweden",    "Switzerland",    "Ukraine",    "Vatican City",    "United States",    "Australia",    "New Zealand",    "Canada"
+  ];
+// a list of all european cotrnies plus US/AU/NZ/Canada excluding United Kingdom
+
+    try {
+      let response = await fetch(
+        window.Shopify.routes.root +
+          'browsing_context_suggestions.json' +
+          '?country[enabled]=true' +
+          `&country[exclude]=${window.Shopify.country}` +
+          '&language[enabled]=true' +
+          `&language[exclude]=${window.Shopify.language}`
+      );
+  
+      if (response.status === 200) {
+        let data = await response.json();
+  
+        // Assuming "data.detected_values.country_name" contains the detected country name
+        let detectedCountry = data.detected_values.country_name;
+  
+        if (whitelistofcountries.includes(detectedCountry)) {
+          console.log(`Country detected: ${detectedCountry}. Everything is okay.`);
+        } else {
+          console.log(`Country detected: ${detectedCountry}. Redirecting to Etsy.`);
+          // Show your modal here
+          showModal(detectedCountry);
+         // setTimeout(() => {
+            // get seconds elapsed from start of function 
+            // and redirect after 3 seconds
+             
+         //   window.location.href = 'https://www.etsy.com/uk/shop/BestDressedBears';
+         // }, 3000); // Redirect after 3 seconds
+        }
+      } else {
+        console.log('Error fetching data.');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  }
+  
+  shopifyRedirect();
+{% endunless %}
+</script>
