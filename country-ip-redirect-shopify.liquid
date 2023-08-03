@@ -10,11 +10,12 @@ inspired by https://github.com/patrickbolle/shopify-snippets/blob/master/ip-redi
 
 {% unless dontShow %}
 <script>
+
 function showModal(detectedCountry) {
     let redirectTimeout = 5000;
-    let modal = createModal();
+    let modal = createModal(detectedCountry);
   
-    function createModal() {
+    function createModal(detectedCountry) {
       let modal = document.createElement('div');
       modal.style.position = 'absolute';
       modal.style.top = '0';
@@ -27,17 +28,30 @@ function showModal(detectedCountry) {
       modal.style.alignItems = 'center';
       modal.style.zIndex = '9999999';
      let logott = document.createElement('img')
-        logott.style.width = '100px';
-        logott.style.height = '100px';
+        logott.style.width = '175px';
+        logott.style.height = '175px';
+        logott.style.borderRadius = '100%';
+        logott.style.padding = '20px';
+        logott.style.background = '#fff';
         logott.style.margin = '0 auto';
+        
 // make sure you set the logo
-     logott.src = 'yourlogo.png/svg whatever';
+     logott.src = 'https://placehold.co/175x175?text=Your\nLogo';
  // carry on
+          let introText = document.createElement('div');
+        introText.style.display = 'flex';
+        introText.style.flexDirection = 'column';
+                introText.innerHTML = `<span style="margin-top:26px;text-align: center;font-size: 20px;line-height: 30px;font-family: 'Public Sans';font-weight: 600;">You are visiting from <br> <strong style="text-decoration:underline;">${detectedCountry}</strong><br> Due to "REASON", you are redirected to Etsy...</span>`;
       let modalContent = document.createElement('div');
-      modalContent.style.backgroundColor = '#fff';
+      modalContent.style.backgroundColor = '#f3b19f';
       modalContent.style.padding = '20px';
-      modalContent.style.borderRadius = '5px';
+      modalContent.style.borderRadius = '0px';
+        modalContent.style.maxWidth = '354px';
+        modalContent.style.width = '100%';
+        modalContent.style.margin = '0 auto';
+         modalContent.style.alignContent = 'center';
          modalContent.appendChild(logott);
+        modalContent.appendChild(introText);
               modalContent.style.display = 'flex';
       modalContent.style.justifyContent = 'center';
          modalContent.style.flexDirection = 'column';
@@ -122,5 +136,6 @@ async function shopifyRedirect() {
   }
   
   shopifyRedirect();
+
 {% endunless %}
 </script>
