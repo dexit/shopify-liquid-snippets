@@ -1,0 +1,94 @@
+{% comment %}
+
+1. set the forms ID
+  1.1 Set up the custom metafield to pass the unique value of LISTING ID 
+  1.2 Set it up below where assign listingID
+2. know your product template handle, that you would wish to exclude
+3. add the javascript at the bottom of the template
+4. Add the Settings json to your theme
+5. Remove your country from the settings.json i have provided
+6. Save and reload the page
+
+For this to work you need to add a id to your product form (inside single product)
+  {%- form 'product', product, id: 'addtobasketo', class: 'addtobasketo-class' -%}
+
+Then jsut at the bottom of the single product template, you would have a javascript tag which runs some js on this template page
+{% endcomment %}
+  {%- form 'product', product, id: 'addtobasketo', class: 'addtobasketo-class' -%}
+      Your logic here
+   {%- endform -%}
+<script>
+
+  {% if product.template_suffix != 'base_new_free' %}
+  {% assign whitelistSwitch = settings.whitelisted_enabled  %}
+  {% assign whitelistCountries = settings.whitelisted_countries %}
+  {%  assign  listingID = product.metafields.oxygen.etsy_product_listing_id %}
+{% assign base_url = 'https://www.etsy.com' %}
+{% assign base_listing_url = '/listing/' %}
+{% assign alternative_url = 'https://www.etsy.com/' %}
+  {% if whitelistSwitch == true %}
+ 
+      const whitelistSwitch = true;
+      const whitelistCountries = '{{ whitelistCountries }}';
+      const whitelistofcountries = whitelistCountries.split(',');
+      const country = '{{ shop.country }}';
+      //
+      //console.log(whitelistofcountries);
+
+      function updateButtonContent(detectedCountry) {
+        const productForm = document.getElementById('addtobasketo'); // Replace 'yourButtonId' with the actual ID of your button
+        if (!productForm) {
+          console.log("productForm not found.");
+          return;
+        }
+
+        if (whitelistofcountries.includes(detectedCountry)) {
+          console.log(`Country detected: ${detectedCountry}. Everything is okay.`);
+           // do no change for allowed countries
+        } else {
+          console.log(`Country detected: ${detectedCountry}. Redirecting to Etsy.`);
+          const button = document.createElement('a');
+         button.classList.add('btn','btn-lg');
+        button.setAttribute('target',"_blank");
+        
+          button.innerHTML = 'Visit Etsy Shop <span class="icon icon-e-31"></span>';
+          {% if listingID != '' %}
+          button.setAttribute('href',"{{ base_url }}{{ base_listing_url }}{{ listingID }}");
+          {% else %}
+          button.setAttribute('href',"{{ alternative_url }}");
+          {% endif %}
+                    // show the new button
+          productForm.after(button);
+          productForm.style.display = "none";
+        }
+      }
+
+      async function shopifyRedirect() {
+        try {
+          let response = await fetch(
+            window.Shopify.routes.root +
+            'browsing_context_suggestions.json' +
+            '?country[enabled]=true' +
+            `&country[exclude]=${window.Shopify.country}` +
+            '&language[enabled]=true' +
+            `&language[exclude]=${window.Shopify.language}`
+          );
+
+          if (response.status === 200) {
+            let data = await response.json();
+
+            // Assuming "data.detected_values.country_name" contains the detected country name
+            let detectedCountry = data.detected_values.country_name;
+
+            updateButtonContent(detectedCountry);
+          } else {
+            console.log('Error fetching data.');
+          }
+        } catch (error) {
+          console.error('An error occurred:', error);
+        }
+      }
+
+      shopifyRedirect();
+  {% endif %}
+</script>
