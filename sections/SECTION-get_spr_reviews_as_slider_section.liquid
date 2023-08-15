@@ -1,0 +1,440 @@
+{% assign item = section.settings %}
+
+{%- capture bgco = -%}
+{% if section.id == "template--19323231273248__98c5210a-3caf-4202-af00-a2b870588e49" %}
+{% else %}
+  {% if section.settings.usebgcolor %}
+  style="background: {{ section.settings.bgco }};
+    {% if section.settings.usebgimage %}
+    background-image: url('{{ section.settings.image | img_url: '1980x' }}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    {% endif %}
+  "{% endif %}
+{% endif %}
+{%- endcapture -%}
+
+<style>
+  {% if section.settings.usebgcolor %}
+  .testimonials{{ section.id }} .testimonials-bg-pad{
+    padding-top: {{ section.settings.bgdepad }}px;
+    padding-bottom: {{ section.settings.bgdepad_2 }}px;
+  }
+  @media (max-width: 768px){
+    .testimonials{{ section.id }} .testimonials-bg-pad{
+      padding-top: {{ section.settings.bgmopad }}px;
+      padding-bottom: {{ section.settings.bgmopad_2 }}px;
+    }
+  }
+  {% if section.settings.usebgminheight %}
+  .testimonials{{ section.id }}{
+    display: flex;
+    align-items: center;
+  }
+  @media (min-width: 769px){
+    .testimonials{{ section.id }}{
+      min-height: {{ section.settings.bgminheight }}px;
+    }
+  }
+  @media (max-width: 768px){
+    .testimonials{{ section.id }}{
+      min-height: {{ section.settings.bgminheight_m }}px;
+    }
+  }
+  @media (max-width: 1024px){
+    .testimonials{{ section.id }} .testimonials-mob-pad {
+      margin-bottom: 0;
+    }
+  }
+  {% endif %}
+  {% endif %}
+
+  {%- for block in section.blocks -%}
+  {%- assign b_i = block.settings -%}
+  .testimonials{{ section.id }} .tt-content-info.obj-data02{{ block.id }} .obj-data02__rating .tt-trim {
+    width: {{ b_i.rating | times: 100 | divided_by: 5 }}%;
+  }
+  {%- endfor -%}
+  .testimonials{{ section.id }} svg.basestarscolor path{
+    fill: {{ item.colorstarsreview }};
+  }
+  .testimonials{{ section.id }} svg.activestarscolor path{
+    fill: {{ item.colorstarsreviewa }};
+  }
+  .testimonials{{ section.id }} svg.basestarscolor rect{
+    fill: {{ item.colorreview }};
+  }
+  .testimonials{{ section.id }} svg.activestarscolor rect{
+    fill: {{ item.colorreviewa }};
+  }
+</style>
+
+<div
+  class="{% if item.top_offset == 'none' %}nomargin {% elsif item.top_offset == 'small' %}tt-offset-small {% endif %}container-indent testimonials{{ section.id }}"
+  {% if section.settings.boxedbg == false %}
+    {{ bgco -}}
+  {% endif %}
+>
+  <div
+    class="container{% if section.settings.usebgcolor and section.settings.boxedbg == false %} testimonials-bg-pad{% if section.settings.mobpad %} testimonials-mob-pad{% endif %}{% endif %}"
+    data-sectionname="index_testimonials"
+  >
+    {% if section.settings.boxedbg %}
+      <div
+        class="col-12{% if section.settings.usebgcolor and section.settings.boxedbg %} testimonials-bg-pad{% if section.settings.mobpad %} testimonials-mob-pad{% endif %}{% endif %}"
+        {{ bgco }}
+      >
+    {% endif %}
+    {%- if section.settings.text1 != '' -%}
+      <div class="tt-block-title">
+        <h2 class="tt-title" style="color: {{ section.settings.titleco }};">{{ section.settings.text1 }}</h2>
+      </div>
+    {%- endif -%}
+{% comment %}
+  Get reviews snippet pulled in here
+  {% endcomment %}  
+    {% render 'getReviews', item: item, sectionSettings: section.settings %}
+    {% comment %}
+  Until here
+  {% endcomment %}  
+    {% if section.settings.boxedbg %}</div>{% endif %}
+    {% comment %}    </div>{% endcomment %}
+    {% if section.settings.changebntcolor %}
+      <style>
+        .testimonials{{ section.id }} button{
+          background: {{ section.settings.bgbaseco }} !important;
+          color: {{ section.settings.arrbaseco }} !important;
+        }
+        .testimonials{{ section.id }} button:hover{
+          background: {{ section.settings.bgactiveco }} !important;
+          color: {{ section.settings.arractiveco }} !important;
+        }
+        .arrow-location-center-02 .slick-arrow, .arrow-location-center-02 .slick-arrow:active {
+          top: {{ section.settings.btnsposition }}% !important;
+        }
+      </style>
+    {% endif %}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Testimonials",
+  "class": "index-section",
+  "settings": [
+      {
+        "type": "select",
+        "id": "top_offset",
+        "label": "Top Offset",
+        "default": "normal",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "normal",
+            "label": "Normal"
+          }
+        ]
+      },
+    {
+      "type": "textarea",
+      "id": "text1",
+      "label": "Title",
+      "default": "WHAT THEY’RE SAYING"
+    },
+    {
+      "type": "checkbox",
+      "id": "module_autoplay",
+      "label": "Auto-rotate slides",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "delay_time",
+      "label": "Change slides every",
+      "options": [
+        { "value": "5000", "label": "5 seconds" },
+        { "value": "6000", "label": "6 seconds" },
+        { "value": "7000", "label": "7 seconds" },
+        { "value": "8000", "label": "8 seconds" },
+        { "value": "9000", "label": "9 seconds" },
+        { "value": "10000", "label": "10 seconds" }
+      ],
+      "default": "7000"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "titleco",
+      "label": "Title color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "rtitleco",
+      "label": "Review title color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "descco",
+      "label": "Description color",
+      "default": "#777777"
+    },
+    {
+      "type": "color",
+      "id": "authco",
+      "label": "Author color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "hobbyco",
+      "label": "Hobby color",
+      "default": "#999999"
+    },
+    {
+      "type": "paragraph",
+      "content": "Starts color"
+    },
+    {
+      "type": "color",
+      "id": "colorstarsreview",
+      "label": "Base stars review color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "colorstarsreviewa",
+      "label": "Active stars review color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "colorreview",
+      "label": "Base background review color",
+      "default": "#D4D4D4"
+    },
+    {
+      "type": "color",
+      "id": "colorreviewa",
+      "label": "Active background review color",
+      "default": "#FFBA2E"
+    },
+    {
+      "type": "paragraph",
+      "content": "Slider arrows color"
+    },
+    {
+      "type": "checkbox",
+      "id": "changebntcolor",
+      "label": "Change buttons settings",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bgbaseco",
+      "label": "Background base color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "arrbaseco",
+      "label": "Arrow base color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "bgactiveco",
+      "label": "Background active color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "arractiveco",
+      "label": "Arrow active color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "btnsposition",
+      "label": "Buttons vertical aligment. In percent",
+      "default": "50",
+	  "info": "Range = 0 - 100"
+    },
+    {
+      "type": "header",
+      "content": "Background color"
+    },
+    {
+      "type": "checkbox",
+      "id": "usebgcolor",
+      "label": "Use background color",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "boxedbg",
+      "label": "Boxed background",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "mobpad",
+      "label": "Mobile bottom padding",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "bgco",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "bgdepad",
+      "label": "Vertical top padding desktop",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgdepad_2",
+      "label": "Vertical bottom padding desktop",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgmopad",
+      "label": "Vertical top padding mobile",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgmopad_2",
+      "label": "Vertical bottom padding mobile",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "checkbox",
+      "id": "usebgimage",
+      "label": "Use background image",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+	  "info": "Recommended image size 1920x750px"
+    },
+    {
+      "type": "checkbox",
+      "id": "usebgminheight",
+      "label": "Use background minimal height",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "bgminheight",
+      "label": "Background minimal height in px. Desktop",
+      "default": "700"
+    },
+    {
+      "type": "text",
+      "id": "bgminheight_m",
+      "label": "Background minimal height in px. Mobile",
+      "default": "300"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "showstars",
+          "label": "Show rating",
+          "default": true
+        },
+        {
+          "type":      "range",
+          "id":        "rating",
+          "min":       1,
+          "max":       5,
+          "step":      0.1,
+          "label":     "Item rating",
+          "default":   5
+        },
+        {
+          "type": "textarea",
+          "id": "text1",
+          "label": "Title",
+          "default": "Title review",
+		  "info": "If you want to delete the text from the screen you need to clear the field"
+        },
+        {
+          "type": "textarea",
+          "id": "text2",
+          "label": "Description",
+          "default": "Lorem ipsum dolor sit amet conse ctetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse.",
+		  "info": "If you want to delete the text from the screen you need to clear the field"
+        },
+        {
+          "type": "checkbox",
+          "id": "usemedia",
+          "label": "Use image",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "textarea",
+          "id": "text3",
+          "label": "Author",
+          "default": "ADRIAN PARKER",
+		  "info": "If you want to delete the text from the screen you need to clear the field"
+        },
+        {
+          "type": "textarea",
+          "id": "text4",
+          "label": "Hobby",
+          "default": "Developer",
+		  "info": "If you want to delete the text from the screen you need to clear the field. Field does not work with the slider mode"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "category": "Sliders",
+      "blocks": [
+        {
+          "type": "item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
