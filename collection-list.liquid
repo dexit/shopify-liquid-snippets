@@ -1,0 +1,105 @@
+{%- assign item = section.settings -%}
+{%- assign sectionid = section.id -%}
+{%- assign collectionsBoxes = section.blocks -%}
+
+<div class="allcollection_slider nomargin container-indent texttabssection texttabssection{{ sectionid }}" data-sectionname="index_texttabssection">
+  <div class="container">
+   {% if item.heading != blank %}
+      <h2>{{ item.heading }}</h2>
+      {% endif %}
+      {% if item.subheading != blank %}
+      <p>{{ item.subheading }}</p>
+      {% endif %}
+<ul  class="featured_slider_new"> 
+
+  
+      {%- for block in collectionsBoxes -%}
+        {%- assign collection = block.settings.collection -%}
+        <li class="track">
+          {%- if collection.image -%}
+            {%- assign collection_image = collection.image -%}
+          {%- elsif collection.products.first and collection.products.first.images != empty -%}
+            {%- assign collection_image = collection.products.first.featured_image -%}
+          {%- else -%}
+            {%- assign collection_image = blank -%}
+          {%- endif -%}
+
+          <a href="{{ collection.url }}" title="{{ collection.title }} - {{ shop.name }}" alt="{{ collection.title }} - {{ shop.name }}">
+            <div class="collection_feature_img">
+              <img class="lazyload" src="{{ collection_image | image_url: width: 400, format: 'webp'}}" loading="lazy" title="{{ collection.title }} - {{ shop.name }}" alt="{{ collection.title }} - {{ shop.name }}">
+            </div>
+            <div class="collection_name">
+              <h4>{{ collection.title }}</h4>
+            </div>
+          </a>
+        </li>
+      {%- endfor -%}
+  
+
+</ul>
+  </div>
+</div>    
+{%  style  %} 
+
+ul.featured_slider_new {
+    display: flex;
+    overflow: hidden;
+    list-style: none;
+    text-align: center;
+    margin: 56px 36px;
+    margin: 0 auto;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-content: flex-start;
+}
+ul.featured_slider_new.slick-initialized.slick-slider {
+    margin: 56px 36px;
+    padding: 0;
+    overflow: inherit;
+}
+li.track,.allcollection_slider .slick-initialized .slick-slide {
+  padding: 1rem !important;
+}
+.collection_feature_img img.lazyload {
+    max-width: 334px;
+    border: 2px solid black;
+}
+{% endstyle %}
+{% schema %}
+  {
+    "name": "Oxygen Collections Slider",
+    "class":"index-section",
+    "settings": [
+		{
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+		{
+          "type": "textarea",
+          "id": "subheading",
+          "label": "Sub Heading"
+        }
+			
+		],
+      "blocks":[
+         {
+          "type": "Collection",
+          "name": "Collection",
+          "settings": [
+              {
+                "id": "collection",
+                "type": "collection",
+                "label": "Select Collection"
+              }
+              ]
+            }
+      ],
+      "presets": [
+       {
+         "name": "All Collections Slider",
+         "category": "All Collections Slider"
+       }
+      ]
+  }
+{% endschema %}
