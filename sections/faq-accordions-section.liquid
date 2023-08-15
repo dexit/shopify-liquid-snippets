@@ -1,0 +1,164 @@
+{% comment %}
+This is a schema friendly faq section, that takes manually added blocks from the theme customizer 2.0, and lists them.
+No Javascript used.
+{% endcomment %}
+{%- assign item = section.settings -%}
+{%- assign sectionid = section.id -%}
+{%- assign faqBlocks = section.blocks -%}
+{%- assign usepadding = '' -%}
+<div class="accordion faq nomargin container-indent texttabssection texttabssection{{ sectionid }}" data-sectionname="index_texttabssection">
+  <div class="container">
+  {% if item.title %}
+    <p style="text-align: center; font-style: italic;">{{ item.title }}</p>
+  {% endif %}
+
+  {% for block in faqBlocks %}
+    {% capture index %}{% increment ind %}{% endcapture %}
+
+    <input id="tab-{{ index }}" type="checkbox" name="faqs" class="hidden"  data-block-id="{{ block.id }}">
+    <div
+      class="section section-{{ section.id }} {% if forloop.first == true %}opened{% endif %} mar-top-sm"
+      data-block-id="{{ block.id }}" {{ block.shopify_attributes }}  itemscope itemprop="mainEntity" itemtype="http://schema.org/Question">
+      <label for="tab-{{ index }}" class="tab-opener">
+        <h3 id="{{ block.settings.title |  replace: " ", "-"  }}" class="tt-title faq-question" itemprop="name text">{{ block.settings.title | escape }}</h3>
+      </label>
+      <div class="faq-answer mar-bot-sm" itemscope itemprop="acceptedAnswer" itemtype="http://schema.org/Answer" ><div class="answerText" itemprop="text">{{ block.settings.content }}</div></div>
+    </div>
+  {% endfor %}
+</div>
+</div>
+
+{% schema %}
+{
+  "name": "Accordions",
+  	"class": "index-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Optional Header",
+      "default": "Accordion Header"
+    }
+  ],
+    "presets": [
+    {
+      "name": "Accordion Oxygen",
+      "category": "Simple Section"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "accordion",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Accordion Header",
+          "label": "Accordion Header"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "default": "<p>This section doesn’t currently include any content. <b>Add content to this section using the sidebar in the customizer.</b></p>",
+          "label": "Accordion Content"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet 'scss' %}
+  .faq {
+    margin-top: 40px;
+transition:all 220ms linear;
+    input {
+      display: none;
+    }
+    label {
+margin-top:8px;
+margin-bottom:8px;
+      display: flex;
+    color: #191919;
+    background: #f6f6e5;
+    padding: 0px;
+flex-direction:row;
+      width:100%;
+transition:all 220ms linear;
+z-index:10;
+
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+justify-content: space-between;
+    }
+    label:before {
+      content: "+";
+      display: inline-block;
+      width:100%;
+
+max-width:30px;
+order:2;
+      margin: 10px;
+      text-align: center;
+      font-size: 30px;
+      line-height: 1.2;
+      font-weight: bold;
+transition:all 220ms linear;
+transform-origin: center;
+    }
+    p {
+z-index:2;
+          font-size: 122.5%;
+    line-height: 36px;
+    font-family: 'Public Sans';
+      padding: 16px;
+      opacity:0;
+    display: block;
+    height: 100%;
+          margin: auto 0;
+  transition: opacity 180ms linear 50ms;
+   
+    }
+    label h3 {
+      display: flex;
+flex-direction:column;
+    font-size: 194.5%;
+    line-height: 59px;
+    padding: 10px 26px !important;
+      z-index:15;
+order:1;
+width: 95%;
+    }
+    input:checked + div > label:before {
+  content: "+";
+      transform: rotate(45deg);
+padding:8px;
+    }
+    input + div > div {
+        transition: opacity 280ms linear 50ms, height 180ms linear 50ms, visibility 200ms linear 50ms;
+    /*  display: none; */
+visibility:hidden;
+height:0;
+opacity:0;
+
+    }
+    input:checked + div > div {
+         /*  display: block; */
+visibility:visible;
+height:100%;
+opacity:1;
+margin-bottom:8px;
+    }
+    input:checked + div p{
+        font-size: 122.5%;
+    line-height: 36px;
+    font-family: 'Public Sans';
+      opacity:1!important;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
