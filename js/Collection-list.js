@@ -1,3 +1,5 @@
+// add this to theme.liquid by :
+//  <script src="{{ 'Collection-list.js'  | asset_url }}" defer="defer"></script>
 jQuery(document).ready(function ($) {
 
 
