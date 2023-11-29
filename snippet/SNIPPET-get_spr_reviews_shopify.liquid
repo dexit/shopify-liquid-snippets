@@ -78,7 +78,7 @@ function setmeup(html) {
 var testHTML = '';
 
 document.addEventListener("DOMContentLoaded", function(event) {
-  jQuery(document).ready(function($) {
+  $(document).ready(function($) {
 
     (function() {
 
@@ -214,14 +214,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
           };
           if (i == 0) {
 
-            var hem = jQuery('#lalala');
-            jQuery(hem).removeClass('slick-initialized slick-slider')
-            jQuery(hem).html('').attr('clean', '1');
-            if (jQuery(hem).attr('clean') == 1) {
-              jQuery(hem).html('<div class="pizdec">' + epicdata + '</div>')
+            var hem = $('#lalala');
+            $(hem).removeClass('slick-initialized slick-slider')
+            $(hem).html('').attr('clean', '1');
+            if ($(hem).attr('clean') == 1) {
+              $(hem).html('<div class="pizdec">' + epicdata + '</div>')
 
               setTimeout(
-                jQuery(hem).find('.pizdec').slick().parent('#lalala').slick(), 2000);
+                $(hem).find('.pizdec').slick().parent('#lalala').slick(), 2000);
             }
 
           }
